@@ -1,7 +1,7 @@
 let config = {
     type: Phaser.AUTO,
-    width: 600,
-    height: 800,
+    width: 525,
+    height: 700,
     physics: {  // learn from Nathan's example
         default: 'arcade',
         arcade: {
@@ -20,3 +20,4 @@ let centerX = game.config.width / 2;
 let centerY = game.config.height / 2;
 let highScore;
 let newHigh = false;
+let keyLEFT, keyRIGHT;
