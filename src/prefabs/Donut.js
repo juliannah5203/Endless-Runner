@@ -5,14 +5,15 @@ class Donut extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         this.points = pointValue;
         this.moveSpeed = game.settings.foodSpeed;
+        
     }
     update() {
-        this.y -= this.moveSpeed;
-        if(this.y <= 0 - this.height) {
-            this.y = game.config.height;
+        this.y += this.moveSpeed;
+        if(this.y >= game.config.height) {
+            this.y = 0;
         }
     }
     reset() {
-        this.y = game.config.height;
+        this.y = 0 - game.config.height;
     }
 }

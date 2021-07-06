@@ -20,4 +20,4 @@ let centerX = game.config.width / 2;
 let centerY = game.config.height / 2;
 let highScore;
 let newHigh = false;
-let keyLEFT, keyRIGHT;
+let keyLEFT, keyRIGHT, keyR;
