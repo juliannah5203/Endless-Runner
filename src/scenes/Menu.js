@@ -26,7 +26,7 @@ class Menu extends Phaser.Scene {
             }
             //this.sound.play('sfx_select');
             this.scene.start('playScene');
-            this.sound.add('bgm').play();
+            //this.sound.add('bgm').play();
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             // two player
@@ -36,7 +36,7 @@ class Menu extends Phaser.Scene {
             }
             //this.sound.play('sfx_select');
             this.scene.start('playScene');
-            this.sound.add('bgm').play();
+            //this.sound.add('bgm').play();
         }
     }
 }

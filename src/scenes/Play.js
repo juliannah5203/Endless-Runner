@@ -28,6 +28,11 @@ class Play extends Phaser.Scene {
             this.playBack = this.add.tileSprite(0, 0, 525, 700, 'blueback').setOrigin(0, 0);
             this.player1 = new Player(this, centerX, centerY + centerX, 'blueboy').setOrigin(0.5, 0);
         }
+        this.music = this.sound.add('bgm', {
+            volume: 0.5,
+            loop: true
+        });
+        this.music.play();
         // this.donut01 = new Donut(this, game.config.width/2-200, centerY + centerX, 'choco', 0, 8).setOrigin(0, 0);
         // this.donut02 = new Donut(this, game.config.width/2+100, centerY + centerX, 'straw', 0, 8).setOrigin(0, 0);
         // this.donut03 = new Donut(this, game.config.width/2-25, centerY + centerX-100, 'ice', 0, 5).setOrigin(0, 0);
@@ -46,7 +51,7 @@ class Play extends Phaser.Scene {
         // var skin3 = Phaser.Math.RND.pick(skins);
         // var skin4 = Phaser.Math.RND.pick(skins);
    
-        this.donut01 = new Donut(this, centerX + parseInt(Phaser.Math.RND.pick(['-80','20','-200','-50','170','150','50']), 10), centerY - centerX, Phaser.Math.RND.pick(['boom','ice','choco','straw','cupcake','watermelon','sandwich']), 0, 30).setOrigin(0, 0);
+        this.donut01 = new Donut(this, centerX + parseInt(Phaser.Math.RND.pick(['-80','20','-200','-50','170','150','50']), 10), centerY - centerX, Phaser.Math.RND.pick(['boom','ice','choco','straw','cupcake','watermelon','sandwich']), 0, 5).setOrigin(0, 0);
         // this.donut02 = new Donut(this, centerX + 170, centerY - centerX, skin2, 0, 30).setOrigin(0, 0);
         // this.donut03 = new Donut(this, centerX - 80, centerY - centerX, skin3, 0, 30).setOrigin(0, 0);
         // this.donut04 = new Donut(this, centerX - 200, centerY - centerX, skin4, 0, 30).setOrigin(0, 0);
@@ -69,7 +74,7 @@ class Play extends Phaser.Scene {
             scoreConfig.color = '#7FA8CF';
         }
         this.scoreLeft = this.add.text(centerX / 10, game.config.height / 30, this.score, scoreConfig);
-        
+        this.add.text(centerX + 100, centerY - centerX - 30, 'Press R to restart',{ fontFamily: 'Comic Sans MS',color: '#170469',fontSize:'32px' }).setOrigin(0.5);
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 0, first: 0}),
@@ -82,7 +87,14 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.gameOver = false;
             this.scene.start("menuScene");
-            
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.add.text(game.config.width/2, game.config.height/2 - 30, 'GAME OVER',{ fontFamily: 'Comic Sans MS',color: '#170469',fontSize:'32px' }).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 34, 'Press (R) to Restart',{ fontFamily: 'Comic Sans MS',color: '#170469',fontSize:'32px' }).setOrigin(0.5);
+            this.gameOver = true;
+            this.sound.play('go');
+            this.music.stop();
+            //this.scene.start("menuScene");
         }
         this.playBack.tilePositionY += 2;
         if (!this.gameOver) {
@@ -106,10 +118,15 @@ class Play extends Phaser.Scene {
         //     // this.player1.reset();
         //     this.shipExplode(this.donut02);
         // }
+        if(this.pass(this.donut01)) {
+            this.donut01.alpha = 0;
+            this.donut01 = new Donut(this, centerX + parseInt(Phaser.Math.RND.pick(['-80','20','-200','-50','170','150','50']), 10), centerY - centerX, Phaser.Math.RND.pick(['boom','ice','choco','straw','cupcake','watermelon','sandwich']), 0, 5).setOrigin(0, 0);
+            this.donut01.alpha = 1;
+        }
         if(this.checkCollision(this.player1, this.donut01)) {
             this.donut01.alpha = 0;
             // this.player1.reset();
-            if ( this.donut01.texture.key == 'boom'){
+            if (this.donut01.texture.key == 'boom'){
                 this.sound.play('boom');
                 
         // create explosion sprite at ship's position
@@ -120,35 +137,37 @@ class Play extends Phaser.Scene {
                   
                 boom.destroy();                       // remove explosion sprite
                 }); 
-                this.score -= 100;
+                this.score -= 20;
                 this.scoreLeft.text = this.score;
-                
             }
         
             else {
                 this.sound.play('ding');
                 this.score += this.donut01.points;
                 this.scoreLeft.text = this.score;
-
             }
-            this.donut01 = new Donut(this, centerX + parseInt(Phaser.Math.RND.pick(['-80','20','-200','-50','170','150','50']), 10), centerY - centerX, Phaser.Math.RND.pick(['boom','ice','choco','straw','cupcake','watermelon','sandwich']), 0, 30).setOrigin(0, 0);
+            this.donut01 = new Donut(this, centerX + parseInt(Phaser.Math.RND.pick(['-80','20','-200','-50','170','150','50']), 10), centerY - centerX, Phaser.Math.RND.pick(['boom','ice','choco','straw','cupcake','watermelon','sandwich']), 0, 5).setOrigin(0, 0);
             this.donut01.alpha = 1;   
             
-        
             if (this.score < 0) {
-                    
-                this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER',{ fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',color: '#170469',fontSize:'20px' }).setOrigin(0.5);
-                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart',{ fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',color: '#170469',fontSize:'20px' }).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 - 30, 'GAME OVER',{ fontFamily: 'Comic Sans MS',color: '#170469',fontSize:'32px' }).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 34, 'Press (R) to Restart',{ fontFamily: 'Comic Sans MS',color: '#170469',fontSize:'32px' }).setOrigin(0.5);
                 this.gameOver = true;
                 this.sound.play('go');
+                this.music.stop();
+            }
         }
-            
         
         
-
     }
-    
-}
+    pass(donut) {
+        if(donut.y >= centerX + centerY + 80) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     checkCollision(rocket, ship) {
         // simple AABB checking
         
@@ -158,9 +177,8 @@ class Play extends Phaser.Scene {
             rocket.height + rocket.y > ship.y) {
                 return true;
         }
-         else {
+        else {
             return false;
         }
     }
 }
-
